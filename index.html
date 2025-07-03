@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ルービックキューブ回転記号図解</title>
+    <meta name="description" content="ルービックキューブの公式回転記号（F, B, R, L, U, D）を視覚的に学習できるWebサイト">
+    <meta name="keywords" content="ルービックキューブ, 回転記号, notation, WCA, スクランブル">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .notation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .notation-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .notation-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .face-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .cube-demo {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            perspective: 400px;
+        }
+        
+        .cube {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transform: rotateX(-15deg) rotateY(25deg);
+        }
+        
+        .face {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 3px solid #333;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 2px;
+        }
+        
+        .face div {
+            border: 1px solid #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+        
+        .front { background: #ff6b6b; transform: translateZ(60px); }
+        .back { background: #ffa500; transform: translateZ(-60px) rotateY(180deg); }
+        .right { background: #4ecdc4; transform: rotateY(90deg) translateZ(60px); }
+        .left { background: #45b7d1; transform: rotateY(-90deg) translateZ(60px); }
+        .top { background: #96ceb4; transform: rotateX(90deg) translateZ(60px); }
+        .bottom { background: #ffeaa7; transform: rotateX(-90deg) translateZ(60px); }
+        
+        .arrow {
+            position: absolute;
+            font-size: 2em;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+        
+        .clockwise { top: -30px; right: -30px; }
+        .counterclockwise { top: -30px; left: -30px; }
+        .double { top: -40px; left: 50%; transform: translateX(-50%); }
+        
+        .notation-examples {
+            margin-top: 15px;
+        }
+        
+        .example {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1.1em;
+        }
+        
+        .legend {
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .legend h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+        
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .legend-item {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .notation-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .cube-demo {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .face {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧩 ルービックキューブ回転記号図解</h1>
+        
+        <div class="notation-grid">
+            <div class="notation-card">
+                <div class="face-title">F (Front) - 前面</div>
+                <div class="cube-demo">
+                    <div class="cube">
+                        <div class="face front">
+                            <div></div><div></div><div></div>
+                            <div></div><div>F</div><div></div>
+                            <div></div><div></div><div></div>
+                        </div>
+                        <div class="face back"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face right"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face left"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face top"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face bottom"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                    </div>
+                    <div class="arrow clockwise">↻</div>
+                </div>
+                <div class="notation-examples">
+                    <div class="example">F - 時計回り90°</div>
+                    <div class="example">F' - 反時計回り90°</div>
+                    <div class="example">F2 - 180°回転</div>
+                </div>
+            </div>
+            
+            <div class="notation-card">
+                <div class="face-title">B (Back) - 背面</div>
+                <div class="cube-demo">
+                    <div class="cube">
+                        <div class="face front"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face back">
+                            <div></div><div></div><div></div>
+                            <div></div><div>B</div><div></div>
+                            <div></div><div></div><div></div>
+                        </div>
+                        <div class="face right"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face left"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face top"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face bottom"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                    </div>
+                    <div class="arrow clockwise">↻</div>
+                </div>
+                <div class="notation-examples">
+                    <div class="example">B - 時計回り90°</div>
+                    <div class="example">B' - 反時計回り90°</div>
+                    <div class="example">B2 - 180°回転</div>
+                </div>
+            </div>
+            
+            <div class="notation-card">
+                <div class="face-title">R (Right) - 右面</div>
+                <div class="cube-demo">
+                    <div class="cube">
+                        <div class="face front"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face back"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face right">
+                            <div></div><div></div><div></div>
+                            <div></div><div>R</div><div></div>
+                            <div></div><div></div><div></div>
+                        </div>
+                        <div class="face left"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face top"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face bottom"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                    </div>
+                    <div class="arrow clockwise">↻</div>
+                </div>
+                <div class="notation-examples">
+                    <div class="example">R - 時計回り90°</div>
+                    <div class="example">R' - 反時計回り90°</div>
+                    <div class="example">R2 - 180°回転</div>
+                </div>
+            </div>
+            
+            <div class="notation-card">
+                <div class="face-title">L (Left) - 左面</div>
+                <div class="cube-demo">
+                    <div class="cube">
+                        <div class="face front"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face back"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face right"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face left">
+                            <div></div><div></div><div></div>
+                            <div></div><div>L</div><div></div>
+                            <div></div><div></div><div></div>
+                        </div>
+                        <div class="face top"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face bottom"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                    </div>
+                    <div class="arrow counterclockwise">↺</div>
+                </div>
+                <div class="notation-examples">
+                    <div class="example">L - 時計回り90°</div>
+                    <div class="example">L' - 反時計回り90°</div>
+                    <div class="example">L2 - 180°回転</div>
+                </div>
+            </div>
+            
+            <div class="notation-card">
+                <div class="face-title">U (Up) - 上面</div>
+                <div class="cube-demo">
+                    <div class="cube">
+                        <div class="face front"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face back"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face right"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face left"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face top">
+                            <div></div><div></div><div></div>
+                            <div></div><div>U</div><div></div>
+                            <div></div><div></div><div></div>
+                        </div>
+                        <div class="face bottom"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                    </div>
+                    <div class="arrow clockwise">↻</div>
+                </div>
+                <div class="notation-examples">
+                    <div class="example">U - 時計回り90°</div>
+                    <div class="example">U' - 反時計回り90°</div>
+                    <div class="example">U2 - 180°回転</div>
+                </div>
+            </div>
+            
+            <div class="notation-card">
+                <div class="face-title">D (Down) - 下面</div>
+                <div class="cube-demo">
+                    <div class="cube">
+                        <div class="face front"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face back"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face right"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face left"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face top"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                        <div class="face bottom">
+                            <div></div><div></div><div></div>
+                            <div></div><div>D</div><div></div>
+                            <div></div><div></div><div></div>
+                        </div>
+                    </div>
+                    <div class="arrow clockwise">↻</div>
+                </div>
+                <div class="notation-examples">
+                    <div class="example">D - 時計回り90°</div>
+                    <div class="example">D' - 反時計回り90°</div>
+                    <div class="example">D2 - 180°回転</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <h2>🔄 回転記号の説明</h2>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <strong>記号なし</strong><br>
+                    時計回り90°回転<br>
+                    例: R, U, F
+                </div>
+                <div class="legend-item">
+                    <strong>' (プライム)</strong><br>
+                    反時計回り90°回転<br>
+                    例: R', U', F'
+                </div>
+                <div class="legend-item">
+                    <strong>2</strong><br>
+                    180°回転<br>
+                    例: R2, U2, F2
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; text-align: center; font-size: 0.9em; opacity: 0.8;">
+                💡 ヒント: 時計回りかどうかは、その面を正面から見たときの回転方向で判断します
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🧩 WCA公式ルールに準拠したルービックキューブ回転記号図解</p>
+            <p>📱 レスポンシブデザイン対応 | Made with ❤️</p>
+        </div>
+    </div>
+</body>
+</html>
